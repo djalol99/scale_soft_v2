@@ -1,0 +1,109 @@
+<script>
+    const scale_service = "http://localhost:13927";
+    const server = location.origin; //"http://localhost:8000";
+    const inp_indicator = document.querySelector('.js-input-indicator');
+    const btn_weigh = document.querySelector('.js-btn-weigh');
+    const select_scale = document.querySelector('.js-select-scale-indicator');
+    let protocol;
+    let read_data_interval_id;
+
+    function process_data(data) {
+        let decimal;
+        let weight;
+        if (protocol===1) {
+            // protocol A9 or A9+
+            decimal = parseInt(data[7]) ;
+            data = parseInt(data.slice(0, 7));
+            weight = data * 10**(decimal*(-1));
+        } else if (protocol===2) {
+            // protocol Ci=200A
+        }
+        
+        if (isNaN(data)) return;
+        
+        inp_indicator.value = weight.toFixed(decimal);   
+    }
+
+    function read_data() {
+        const url = scale_service + "/data";
+        fetch(url)
+        .then(function(res) {
+            return res.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                process_data(data.data);
+            }
+        })
+        .catch(function(err) {
+            console.log(`Something went wrong. ${err}`)
+        })
+    }
+
+    function connect2port(port) {
+        const url = scale_service + "/connect?port=" + port;
+        fetch(url)
+        .then(function(res) {
+            return res.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                read_data();
+                read_data_interval_id = setInterval(read_data, 500);
+                btn_weigh.disabled = false;
+            } else {
+                throw new Error(data.error);
+            }
+        })
+        .catch(function(err) {
+            console.error(`Something went wrong. ${err}`)
+            alert(`${port}-portga ulanib bo'lmadi.`)
+        })   
+    }
+
+    function close_connection() {
+        url = scale_service + '/close';
+        fetch(url).then(res=>res.json())
+        .then(data=>console.log(data))
+        .catch(err=>console.error(`Something went wrong. ${err}`))
+        .finally(()=>inp_indicator.value = "")
+    }
+
+    function calculate_net(element) {
+        const input_gross = document.querySelector('.js-input-weight') || document.querySelector('.js-input-gross');
+        const input_tare = document.querySelector('.js-input-tare')
+        const gross = input_gross ? input_gross.value : 0;
+        const tare = input_tare ? input_tare.value : 0;
+        element.value = gross - tare;
+    }
+
+    select_scale.addEventListener('change', function(e) {
+       if (this.value) {
+            const url = server + "/catalogs/scales/" + this.value;
+            fetch(url).then((res)=>res.json())
+            .then(function(data) {
+                connect2port(data.port);
+                protocol = data.protocol;
+            }).catch((err)=>console.log(`Something went wrong. ${err}`))
+       } else {
+            clearInterval(read_data_interval_id);
+            close_connection();
+            btn_weigh.disabled = true;
+       }
+    });
+
+    btn_weigh.addEventListener('click', function(e) {
+        document.querySelectorAll('.js-input-weight').forEach(el=>el.value = Number.parseInt(inp_indicator.value));
+        
+        const date = new Date();
+        const formatter = new Intl.DateTimeFormat('uz', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        document.querySelectorAll('.js-input-date-weight').forEach(el=>el.value = formatter.format(date));
+
+        document.querySelectorAll('.js-select-scale-weight').forEach(el=>el.value = select_scale.value);
+
+        document.querySelectorAll('.js-input-net').forEach(calculate_net);
+           
+    });
+
+    window.addEventListener('beforeunload', close_connection);
+</script>

@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}Yukni tarozidan o'tkazish{% endblock %}
+
+{% block content %}
+    <div class="container my-3 pb-4">
+        <div class="row">
+            <h3 class="text-center mb-3">Yukni tarozidan o'tkazish</h3>
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ form.errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <div class="col">
+                <form method="POST" class="border border-secondary p-4 rounded needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row my-2">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.organization.id_for_label}}" class="form-label">Tashkilot</label> 
+                                    {{ form.organization }}
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="{{form.warehouse.id_for_label}}" class="form-label">Sklad</label> 
+                                    {{ form.warehouse }}
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="{{form.counterparty.id_for_label}}" class="form-label">Kontragent</label> 
+                                    {{ form.counterparty }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.vehicle.id_for_label}}" class="form-label">Transport</label> 
+                                    {{ form.vehicle }}
+                                </div>
+                                <div class="invalid-feedback">
+                                    Transportni tanlang.
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="{{form.driver.id_for_label}}" class="form-label">Haydovchi</label> 
+                                    {{ form.driver }}
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="{{form.contract.id_for_label}}" class="form-label">Shartnoma</label> 
+                                    {{ form.contract }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Indicator screen -->
+                        <div class="col-md-4 bg-secondary my-auto text-white rounded">
+                            <div class="form-group my-2">
+                                <select class="form-select js-select-scale-indicator">
+                                    {% for id, name in form.fields.scale_gross.choices %}
+                                        <option value="{{id}}">{{name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" disabled class="form-control fs-1 js-input-indicator">
+                                <span class="fs-3 ms-1 pt-4">kg</span>
+                            </div>
+                            <div class="my-2">
+                                <button type="button" class="btn btn-warning w-100 js-btn-weigh" disabled>O'lchash</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-md-4">
+                            <label for="{{form.product.id_for_label}}" class="form-label">Tovar</label> 
+                            {{ form.product }}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{form.price.id_for_label}}" class="form-label">Narxi</label> 
+                            {{ form.price }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{form.vat_rate.id_for_label}}" class="form-label">QQS stavka</label> 
+                            {{ form.vat_rate }}
+                        </div>
+                        <div class="col-md-2 pt-5">
+                            {{ form.includes_vat }}
+                            <label for="{{form.includes_vat.id_for_label}}" class="form-check-label">QQS ichida</label> 
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-md-3">
+                            <label for="{{form.summa.id_for_label}}" class="form-label">Summa</label> 
+                            <input type="hidden" name="{{form.summa.name}}" class="js-input-summa" value="{% if form.summa.value %}{{form.summa.value}}{% endif %}"/>
+                            <input type="number" class="form-control js-input-summa" value="{% if form.summa.value %}{{form.summa.value}}{% endif %}" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{form.vat_summa.id_for_label}}" class="form-label">Summa QQS</label> 
+                            <input type="hidden" name="{{form.vat_summa.name}}" class="js-input-vat-summa" value="{% if form.vat_summa.value %}{{form.vat_summa.value}}{% endif %}"/>
+                            <input type="number" class="form-control js-input-vat-summa" value="{% if form.vat_summa.value %}{{form.vat_summa.value}}{% endif %}" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{form.summa_with_vat.id_for_label}}" class="form-label">Jami summa</label> 
+                            <input type="hidden" name="{{form.summa_with_vat.name}}" class="js-input-summa-with-vat" value="{% if form.summa_with_vat.value %}{{form.summa_with_vat.value}}{% endif %}"/>
+                            <input type="number" class="form-control js-input-summa-with-vat" value="{% if form.summa_with_vat.value %}{{form.summa_with_vat.value}}{% endif %}" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <table class="table table-bordered border-dark">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col" class="border-2 border-dark border-top-0">Massa</th>
+                                    <th scope="col" class="border-2 border-dark border-top-0">Vaqt</th>
+                                    <th scope="col" class="border-2 border-dark border-top-0 border-end-0">Tarozi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="border-2 border-dark border-start-0 table-primary">Brutto</th>
+                                    <td>
+                                        <input type="hidden" name="{{form.gross.name}}" class="js-input-weight" value="{% if form.gross.value %}{{form.gross.value}}{% endif %}"/>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control js-input-weight" value="{{form.gross.value}}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="{{form.date_gross.name}}" class="js-input-date-weight" value="{{form.date_gross.value|date:'Y-m-d H:i'}}"/>
+                                        <input type="datetime-local" class="form-control js-input-date-weight" value="{{form.date_gross.value|date:'Y-m-d H:i'}}" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="{{form.scale_gross.name}}" class="js-select-scale-weight" value="{% if form.scale_gross.value %}{{form.scale_gross.value}}{% endif %}"/>
+                                        <select class="form-select js-select-scale-weight" disabled>
+                                            {% for id, name in form.fields.scale_gross.choices %}
+                                                {% if form.scale_gross.value == id %}
+                                                    <option value="{{id}}" selected>{{name}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="border-2 border-dark border-start-0 table-primary">Tara</th>
+                                    <td>
+                                        <input type="hidden" name="{{form.tare.name}}" class="js-input-tare" value="{% if form.tare.value %}{{form.tare.value}}{% endif %}"/>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control js-input-tare" value="{{form.tare.value}}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="{{form.date_tare.name}}" class="js-input-date-tare" value="{{form.date_tare.value|date:'Y-m-d H:i'}}"/>
+                                        <input type="datetime-local" class="form-control js-input-date-tare" value="{{form.date_tare.value|date:'Y-m-d H:i'}}" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="{{form.scale_tare.name}}" class="js-select-scale-tare" value="{% if form.scale_tare.value %}{{form.scale_tare.value}}{% endif %}"/>
+                                        <select class="form-select js-select-scale-tare" disabled>
+                                            {% for id, name in form.fields.scale_tare.choices %}
+                                                {% if form.scale_tare.value == id %}
+                                                    <option value="{{id}}" selected>{{name}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom-0">
+                                    <th scope="row" class="border-2 border-dark border-start-0 border-bottom-0 table-primary">Netto</th>
+                                    <td>
+                                        <input type="hidden" name="{{form.net.name}}" class="js-input-net" value="{% if form.net.value %}{{form.net.value}}{% endif %}"/>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control js-input-net" value="{% if form.net.value %}{{form.net.value}}{% endif %}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group text-end mt-3">
+                        <button type="submit" class="btn btn-primary me-2">Saqlash</button>
+                        <a href="{% url 'documents:weighing' %}" class="btn btn-outline-secondary">Orqaga</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% include 'documents/scripts.html' %}
+    <script>
+        function calculate_summa() {
+            let vat_rate = 0;
+            const id_vat_rate = document.querySelector('#{{form.vat_rate.id_for_label}}').value;
+            if (id_vat_rate) {
+                const url = server + '/enums/vatrates/' + id_vat_rate;
+                fetch(url).then(res=>{
+                    if (res.ok) return res.json();
+                    else throw new Error(res.statusText);
+                }).then(data=>{
+                    vat_rate = data.rate; 
+                }).catch(err=>console.log(`Something went wrong. ${err}`))
+                .finally(()=>{
+                    if (document.querySelector('#{{form.includes_vat.id_for_label}}').checked) {
+                        document.querySelectorAll('.js-input-summa').forEach(el=>{
+                            el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*(100-vat_rate)/100).toFixed(2));
+                        });
+                        document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
+                            el.value = parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*vat_rate/100).toFixed(2));
+                        });
+                    } else {
+                        document.querySelectorAll('.js-input-summa').forEach(el=>{
+                            el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value).toFixed(2));
+                        });
+                        document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
+                            el.value = parseFloat((document.querySelector('.js-input-summa').value * vat_rate / 100).toFixed(2));
+                        });
+                    }
+                    document.querySelectorAll('.js-input-summa-with-vat').forEach(el=>{
+                            el.value =  parseFloat((parseFloat(document.querySelector('.js-input-summa').value) + parseFloat(document.querySelector('.js-input-vat-summa').value)).toFixed(2));
+                        });
+                })
+            } else {
+                document.querySelectorAll('.js-input-summa').forEach(el=>{
+                    el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value).toFixed(2));
+                });
+                document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
+                    el.value = 0;
+                });
+                document.querySelectorAll('.js-input-summa-with-vat').forEach(el=>{
+                            el.value =  parseFloat((parseFloat(document.querySelector('.js-input-summa').value) + parseFloat(document.querySelector('.js-input-vat-summa').value)).toFixed(2));
+                        });
+            }
+            
+        }
+
+        document.querySelectorAll('.js-summa-dependency ').forEach(el=>el.addEventListener('change', calculate_summa));
+
+        // const server = location.origin;
+        document.querySelector('.js-vehicle')
+        .addEventListener('change', function(e) {
+            if (this.value) {
+                const url = server + '/documents/last-vehicle-tare/' + this.value;
+                fetch(url).then(res=>{
+                    if (res.ok) return res.json();
+                    else throw new Error(res.statusText);
+                })
+                .then(data=>{
+                    document.querySelectorAll('.js-input-tare').forEach(el=>el.value = Number.parseInt(data.tare));
+        
+                    document.querySelectorAll('.js-input-date-tare').forEach(el=>el.value = data.date.slice(0, -4));
+
+                    document.querySelectorAll('.js-select-scale-tare').forEach(el=>el.value = data.scale);   
+                }).catch(err=>{
+                    document.querySelectorAll('.js-input-tare').forEach(el=>el.value = 0);
+                    document.querySelectorAll('.js-input-date-tare').forEach(el=>el.value = "");
+                    document.querySelectorAll('.js-select-scale-tare').forEach(el=>el.value = "");
+                    console.error(`Something went wrong. ${err}`);
+                }).finally(()=>{
+                    document.querySelectorAll('.js-input-net').forEach(calculate_net);
+                })
+            } else {
+                document.querySelectorAll('.js-input-tare').forEach(el=>el.value = 0);
+                document.querySelectorAll('.js-input-date-tare').forEach(el=>el.value = "");
+                document.querySelectorAll('.js-select-scale-tare').forEach(el=>el.value = "");
+            }
+        });
+
+        document.querySelector('.js-product').addEventListener('change', function(e) {
+            if (this.value) {
+                url = server + '/catalogs/products/' + this.value;
+                fetch(url).then(res=>res.json())
+                .then(data=>{
+                    document.querySelector('#{{form.vat_rate.id_for_label}}').value = data.vat_rate;
+                    calculate_summa();
+                }).catch(err=>console.error(`Something went wrong. ${err}`));
+            } else {
+                document.querySelector('#{{form.vat_rate.id_for_label}}').value = "";
+                calculate_summa();
+            } 
+            
+        });
+    </script>
+{% endblock %}

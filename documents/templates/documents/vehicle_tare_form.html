@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Transport Tarasi{% endblock %}
+
+{% block content %}
+    <div class="container my-3 pb-4">
+        <div class="row">
+            <h3 class="text-center mb-3">Transport Tarasi</h3>
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ form.errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <div class="col-md-10 offset-md-1">
+                <form method="POST" class="border border-secondary p-4 rounded needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row my-2">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="{{form.vehicle.id_for_label}}" class="form-label">Transport</label> 
+                                    {{ form.vehicle }}
+                                    <div class="invalid-feedback">
+                                        Transportni tanlang.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <input type="hidden" name="{{form.scale.name}}" class="js-select-scale-weight" value="{% if form.scale.value %}{{form.scale.value}}{% endif %}">
+                                    <label for="{{form.scale.id_for_label}}" class="form-label">Tarozi</label> 
+                                    <select class="form-select js-select-scale-weight" disabled>
+                                        {% for id, name in form.fields.scale.choices %}
+                                            {% if form.scale.value == id %}
+                                                <option value="{{id}}" selected>{{name}}</option>
+                                            {% else %}
+                                                <option value="{{id}}">{{name}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <input type="hidden" name="{{form.tare.name}}" class="js-input-weight" value="{{form.tare.value}}" />
+                                    <label for="{{form.tare.id_for_label}}" class="form-label">Tara</label> 
+                                    <input type="number" id="{{form.tare.id_for_label}}" class="form-control js-input-weight" value="{{form.tare.value}}" disabled>
+                                </div>
+                                <div class="col">
+                                    <input type="hidden" name="{{form.date.name}}" class="js-input-date-weight" value="{{form.date.value|date:'Y-m-d H:i'}}">
+                                    <label for="{{form.date.id_for_label}}" class="form-label">Sana</label> 
+                                    <input type="datetime-local" id="{{form.date.id_for_label}}" class="form-control js-input-date-weight" value="{{form.date.value|date:'Y-m-d H:i'}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 offset-md-1 bg-secondary my-auto text-white rounded">
+                            <div class="form-group my-2">
+                                <select class="form-select js-select-scale-indicator">
+                                    {% for id, name in form.fields.scale.choices %}
+                                        <option value="{{id}}">{{name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" disabled class="form-control fs-1 js-input-indicator">
+                                <span class="fs-3 ms-1 pt-4">kg</span>
+                            </div>
+                            <div class="my-2">
+                                <button type="button" class="btn btn-warning w-100 js-btn-weigh" disabled>O'lchash</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-end mt-3">
+                        <button type="submit" class="btn btn-primary me-2">Saqlash</button>
+                        <a href="{% url 'documents:vehicle-tares' %}" class="btn btn-outline-secondary">Orqaga</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% include 'documents/scripts.html' %}
+{% endblock %}

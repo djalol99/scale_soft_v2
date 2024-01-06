@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Shartnomalar
+{% endblock %}
+
+{% block content %}
+    <div class="container my-3 pb-4">
+        <div class="d-flex justify-content-between mb-2">
+            <h3>Shartnomalar</h3>
+            <div>
+                <!-- Filter Modal -->
+                <div class="modal fade" id="filterModel" tabindex="-1" aria-labelledby="filterModelLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id=" filterModelLabel">Filter</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="get" class="col-md-8 offset-md-2">
+                                    <div class="form-group my-2">
+                                        <label for="{{filter.form.organization.id_for_label}}" class="form-label">Tashkilot</label> 
+                                        <select name="{{filter.form.organization.name}}" id="{{filter.form.organization.id_for_label}}" class="form-select">
+                                            {% for id, name in filter.form.fields.organization.choices %}
+                                                {% if request.GET.organization|add:"0" == id|add:"0" %}
+                                                    <option value="{{id}}" selected>{{name}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="{{filter.form.counterparty.id_for_label}}" class="form-label">Kontragent</label> 
+                                        <select name="{{filter.form.counterparty.name}}" id="{{filter.form.counterparty.id_for_label}}" class="form-select">
+                                            {% for id, name in filter.form.fields.counterparty.choices %}
+                                                {% if request.GET.counterparty|add:"0" == id|add:"0" %}
+                                                    <option value="{{id}}" selected>{{name}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Button trigger filter modal -->
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterModel">
+                    Filter
+                </button>
+                <a href="{% url 'catalogs:contracts' %}" class="btn btn-secondary me-3">Filterni tozalash</a>
+                <a class="btn btn-primary" href="{% url 'catalogs:contract-create' %}">+ Yangi qo'shish</a>
+            </div>
+        </div>
+        <!-- Table  -->
+        <table class="table table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sana</th>
+                    <th scope="col">Soni</th>
+                    <th scope="col">Tashkilot</th>
+                    <th scope="col">Kontragent</th>
+                    <th scope="col">Kommanda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in filter.qs %}
+                    <tr>
+                        <th scope="row">{{obj.id}}</th>
+                        <td>{{obj.date}}</td>
+                        <td>{{obj.number}}</td>
+                        <td>{{obj.organization}}</td>
+                        <td>{{obj.counterparty}}</td>
+                        <td>
+                            <a href="{% url 'catalogs:contract-update' obj.id%}" class="btn btn-secondary btn-sm">Tahrirlash</a>
+                            <a href="{% url 'catalogs:contract-delete' obj.id%}" class="btn btn-danger btn-sm">O'chirish</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

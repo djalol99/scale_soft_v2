@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Transport{% endblock %}
+
+{% block content %}
+    <div class="container my-3 pb-4">
+        <div class="row">
+            <h3 class="text-center mb-3">Transport</h3>
+            <div class="col-md-6 offset-md-3">
+                <form method="POST" class="border border-secondary p-4 rounded needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group my-2">
+                        <label for="{{form.name.id_for_label}}" class="form-label">Nom</label> 
+                        {{ form.name }}
+                        <div class="invalid-feedback">
+                            Transport nomini kiriting.
+                        </div>
+                        {% if form.name.errors %}
+                            <small class="text-danger">{{ form.name.errors|striptags  }}</small> 
+                        {% endif %}
+                    </div>
+                    <div class="form-group my-2">
+                        <label for="{{form.registration_plate.id_for_label}}" class="form-label">Raqami</label> 
+                        {{ form.registration_plate }}
+                        <div class="invalid-feedback">
+                            Transport raqamini kiriting.
+                        </div>
+                        {% if form.registration_plate.errors %}
+                            <small class="text-danger">{{ form.registration_plate.errors|striptags  }}</small> 
+                        {% endif %}
+                    </div>
+                    <div class="form-group my-2">
+                        <label for="{{form.brand.id_for_label}}" class="form-label">Brandi</label> 
+                        {{ form.brand }}
+                        <div class="invalid-feedback">
+                            Transport markasini tanlang.
+                        </div>
+                        {% if form.brand.errors %}
+                            <small class="text-danger">{{ form.brand.errors|striptags  }}</small> 
+                        {% endif %}
+                    </div>
+                    <div class="form-group text-end mt-3">
+                        <button type="submit" class="btn btn-primary me-2">Saqlash</button>
+                        <a href="{% url 'catalogs:vehicles' %}" class="btn btn-outline-secondary">Orqaga</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

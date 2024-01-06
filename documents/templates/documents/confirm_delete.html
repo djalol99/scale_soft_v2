@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}O'chirishni tasdiqlash{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center mb-3">O'chirishni tasdiqlash</h2>
+                <form action="" method="post" class="border border-danger p-4 rounded">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <p>Siz rostdan ham "{{object}}"ni o'chirishni hohlayszmi?</p>
+                    </div>
+                    <div class="form-group text-end">
+                        <button type="submit" class="btn btn-danger me-2">O'chirish</button>
+                        <button type="button" onclick="history.back()" class="btn btn-outline-secondary">Bekor qilish</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

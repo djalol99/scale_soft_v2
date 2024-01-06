@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+psycopg2 = "==2.8.*"
+djangorestframework = "*"
+django-rest-knox = "*"
+django-bootstrap-v5 = "*"
+importlib-metadata = "*"
+django-filter = "*"
+wfastcgi = "*"
+psutil = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

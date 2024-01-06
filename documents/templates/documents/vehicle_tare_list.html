@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Transport Taralari
+{% endblock %}
+
+{% block content %}
+    <div class="container my-3 pb-4">
+        <div class="d-flex justify-content-between mb-2">
+            <h3>Transport Taralari</h3>
+            <div>
+                <!-- Filter Modal -->
+                <div class="modal fade" id="filterModel" tabindex="-1" aria-labelledby="filterModelLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id=" filterModelLabel">Filter</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="get" class="col-md-8 offset-md-2">
+                                    <div class="row my-2">
+                                        <div class="col-md-6">
+                                            <label for="{{filter.form.date__gte.id_for_label}}" class="form-label">Sanadan</label> 
+                                            <input type="date" name="{{filter.form.date__gte.name}}" id="{{filter.form.date__gte.id_for_label}}" class="form-control" value="{{request.GET.date__gte}}"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{filter.form.date__lte.id_for_label}}" class="form-label">Sanagacha</label> 
+                                            <input type="date" name="{{filter.form.date__lte.name}}" id="{{filter.form.date__lte.id_for_label}}" class="form-control" value="{{request.GET.date__lte}}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="{{filter.form.vehicle.id_for_label}}" class="form-label">Transport</label> 
+                                        <select name="{{filter.form.vehicle.name}}" id="{{filter.form.vehicle.id_for_label}}" class="form-select">
+                                            {% for id, name in filter.form.fields.vehicle.choices %}
+                                                {% if request.GET.vehicle|add:"0" == id|add:"0" %}
+                                                    <option value="{{id}}" selected>{{name}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Button trigger filter modal -->
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterModel">
+                    Filter
+                </button>
+                <a href="{% url 'documents:vehicle-tares' %}" class="btn btn-secondary me-3">Filterni tozalash</a>
+                <a class="btn btn-primary" href="{% url 'documents:vehicle-tare-create' %}">+ Yangi qo'shish</a>
+            </div>
+        </div>
+        <!-- Table  -->
+        <table class="table table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sana</th>
+                    <th scope="col">Transport</th>
+                    <th scope="col">Tara</th>
+                    <th scope="col">Kommanda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in filter.qs %}
+                    <tr>
+                        <th scope="row">{{obj.id}}</th>
+                        <td>{% if obj.date %} {{obj.date|date:'Y-m-d H:i'}} {% else %} - {% endif %}</td>
+                        <td>{% if obj.vehicle %} {{obj.vehicle}} {% else %} - {% endif %}</td>
+                        <td>{% if obj.tare %} {{obj.tare}} {% else %} - {% endif %}</td>
+                        <td>
+                            <a href="{% url 'documents:vehicle-tare-update' obj.id%}" class="btn btn-secondary btn-sm">Tahrirlash</a>
+                            <a href="{% url 'documents:vehicle-tare-delete' obj.id%}" class="btn btn-danger btn-sm">O'chirish</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% load i18n %}
+<nav class="navbar navbar-expand-md bg-warning border-bottom">
+  <div class="container">
+      <a class="navbar-brand" href="{% url 'home' %}">ScaleSoft</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon fw-bolder">=</span>
+      </button>
+      <div class="collapse navbar-collapse d-md-flex" id="navbarSupportedContent">
+		  <ul class="navbar-nav col-md-6 justify-content-md-center me-auto mb-2 mb-md-0">
+			{% if user.is_authenticated %}
+				<li class="nav-item dropdown">
+					<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Kataloglar
+					</button>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="{% url 'catalogs:brands' %}">Transport Markalari</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:vehicles' %}">Transportlar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:organizations' %}">Tashkilotlar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:warehouses' %}">Skladlar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:counterparties' %}">Kontragentlar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:contracts' %}">Shartnomalar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:drivers' %}">Haydovchilar</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:uom' %}">O'lchov birliklari</a></li>
+						<li><a class="dropdown-item" href="{% url 'catalogs:products' %}">Tovarlar</a></li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown">
+					<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Dokumentlar
+					</button>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="{% url 'documents:weighing' %}">Yuklar-tarozi</a></li>
+						<li><a class="dropdown-item" href="{% url 'documents:vehicle-tares' %}">Transportlar-tarozi</a></li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown">
+					<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					{% translate "Devices" %}
+					</button>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" href="{% url 'devices:scales' %}">Tarozilar</a></li>
+						<li><a class="dropdown-item" href="{% url 'devices:cameras' %}">Kameralar</a></li>
+					</ul>
+				</li>
+			{% endif %}
+		</ul>
+        <div class="d-md-flex col-md-3 justify-content-md-end">
+			<form action="{% url 'set_language' %}" method="post" class="me-2 js-language-form">
+				{% csrf_token %}
+				<!-- <input name="next" type="hidden" value="."> -->
+				<select name="language" class="form-select">
+					{% get_current_language as LANGUAGE_CODE %}
+					{% get_available_languages as LANGUAGES %}
+					{% get_language_info_list for LANGUAGES as languages %}
+					{% for language in languages %}
+						<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+							{{ language.name_local }} ({{ language.code }})
+						</option>
+					{% endfor %}
+				</select>
+				<!-- <input type="submit" value="Go"> -->
+			</form>
+	
+			{% if user.is_authenticated %}
+				<a href="{% url 'logout' %}" class="btn btn-secondary">Chiqish</a>
+			{% else %}
+          		<a href="{% url 'login' %}" class="btn btn-primary">Kirish</a>
+			{% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
