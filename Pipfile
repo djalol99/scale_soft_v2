@@ -12,6 +12,13 @@ importlib-metadata = "*"
 django-filter = "*"
 wfastcgi = "*"
 psutil = "*"
+channels = "==3.*"
+channels-redis = "*"
+pyserial = "*"
+requests = "*"
+xmltodict = "*"
+opencv-python = "*"
+pillow = "*"
 
 [dev-packages]
 

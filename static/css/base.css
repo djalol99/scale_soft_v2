@@ -1,0 +1,12 @@
+.camera__body, .weight-indicator__body {
+    width: 100%;
+    position: relative;
+    padding-bottom: 56.25%; /* ratio 16/9 */
+}
+
+.camera__img, .weight-indicator__text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+

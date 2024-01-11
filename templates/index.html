@@ -6,66 +6,88 @@
     <div class="row mt-5">
         <!-- Weight-indicator -->
         <div class="col-md-4">
-            <div class="weight-indicator border border-1 p-2 bg-light" data-name="scale_1">
+            <div class="weight-indicator border border-1 p-2 bg-light js-truckscale" data-name="scale_1" data-id="1" data-pk="{{truckscale_1}}">
                 <div class="weight-indicator__header row mb-2">
                     <div class="col-md-6">
                         <button type="button" class="js-scale-on btn btn-primary">ON</button>
                         <button type="button" class="js-scale-off btn btn-secondary">OFF</button>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-select js-select-scale">
+                        <select class="form-select js-device">
+                            {% if truckscale_1 == 0 %}
+                                <option value="0" selected>--------</option>
+                            {% endif %}
                             {% for scale in scales %}
-                            <option value="{{scale.id}}">{{scale.name}}</option>
+                                {% if truckscale_1 == scale.id %}
+                                    <option value="{{scale.id}}" selected>{{scale.name}}</option>
+                                {% else %}
+                                    <option value="{{scale.id}}">{{scale.name}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="weight-indicator__text d-flex align-items-center justify-content-center border border-2 border-dark"
-                    style="min-width: 320px; min-height: 180px;">
-                    <span class="display-1 fw-normal js-result">-</span>
-                    <span>kg</span>
+                <div class="weight-indicator__body border border-2 border-dark">
+                    <div class="weight-indicator__text d-flex align-items-center justify-content-center">
+                        <span class="display-1 fw-normal js-display">-</span>
+                        <span>kg</span>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- IP Camera 1 -->
         <div class="col-md-4">
-            <div class="camera border border-1 p-2 bg-light" data-name="camera_1">
+            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_1" data-id="1" data-pk="{{ipcamera_1}}">
                 <div class="camera__header row mb-2">
                     <div class="col-md-6">
                         <button type="button" class="js-camera-on btn btn-primary">ON</button>
                         <button type="button" class="js-camera-off btn btn-secondary">OFF</button>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-select js-select-camera">
-                            {% for camera in ipcameras %}
-                            <option value="{{camera.id}}">{{camera.name}}</option>
+                        <select class="form-select js-device">
+                            {% if ipcamera_1 == 0 %}
+                                <option value="0" selected>--------</option>
+                            {% endif %}
+                            {% for ipcamera in ipcameras %}
+                                {% if ipcamera_1 == ipcamera.id %}
+                                    <option value="{{ipcamera.id}}" selected>{{ipcamera.name}}</option>
+                                {% else %}
+                                    <option value="{{ipcamera.id}}">{{ipcamera.name}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="img-wrapper bg-secondary" style="min-width: 320px; min-height: 180px;">
-                    <img src="" alt="IP Camera..." class="w-100 js-camera">
+                <div class="camera__body bg-secondary">
+                    <img src="" alt="IP Camera..." class="camera__img w-100 js-display">
                 </div>
             </div>
         </div>
         <!-- IP Camera 2 -->
         <div class="col-md-4">
-            <div class="camera border border-1 p-2 bg-light" data-name="camera_2">
+            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_2" data-pk="{{ipcamera_2}}">
                 <div class="camera__header row mb-2">
                     <div class="col-md-6">
                         <button type="button" class="js-camera-on btn btn-primary">ON</button>
                         <button type="button" class="js-camera-off btn btn-secondary">OFF</button>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-select js-select-camera">
-                            {% for camera in ipcameras %}
-                            <option value="{{camera.id}}">{{camera.name}}</option>
+                        <select class="form-select js-device">
+                            {% if ipcamera_2 == 0 %}
+                                <option value="0" selected>--------</option>
+                            {% endif %}
+                            {% for ipcamera in ipcameras %}
+                                {% if ipcamera_2 == ipcamera.id %}
+                                    <option value="{{ipcamera.id}}" selected>{{ipcamera.name}}</option>
+                                {% else %}
+                                    <option value="{{ipcamera.id}}">{{ipcamera.name}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="img-wrapper bg-secondary" style="min-width: 320px; min-height: 180px;">
-                    <img src="" alt="IP Camera..." class="w-100 js-camera">
+                <div class="camera__body bg-secondary" style="min-width: 320px; min-height: 180px;">
+                    <img src="" alt="IP Camera..." class="camera__img w-100 js-display">
                 </div>
             </div>
         </div>
@@ -74,118 +96,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    const workers = {}
-    let worker, ipcamWS, ipcam, scaleWS;
-
-    function startStream() {
-        if (ipcamWS) return;
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener("readystatechange", function () {
-            if (this.readyState == 4 && this.status == 200) {
-                const port = this.responseText;
-                if (port == 0) {
-                    alert("There is no available port");
-                    return;
-                }
-
-                console.log(port);
-                ipcamWS = new WebSocket(`ws://localhost:${port}`);
-
-                ipcam = document.querySelector(".js-camera-1");
-                ipcam.onload = function () {
-                    URL.revokeObjectURL(this.src); // release the blob URL once the image is loaded
-                }
-
-                ipcamWS.addEventListener("message", function (event) {
-                    if (typeof (event.data) == "object") {
-                        console.log(event.data);
-                        ipcam.src = URL.createObjectURL(event.data);
-                        console.log(ipcam.src);
-                        this.send(0);
-                    }
-                    else {
-                        const data = JSON.parse(event.data);
-                        const anpr = data["EventNotificationAlert"]["ANPR"];
-                        const licensePlate = anpr["licensePlate"];
-                        console.log(licensePlate);
-                    }
-                });
-
-                ipcamWS.addEventListener("close", function (event) {
-                    if (ipcamWS) {
-                        ipcamWS = undefined;
-                    }
-                });
-
-                ipcamWS.addEventListener("error", function (event) {
-                    alert("Connection problem!");
-                })
-            }
-        });
-        const pk = document.querySelector(".js-select-camera").value;
-        xhr.open("GET", `http://localhost:8000/devices/cameras/connect/${pk}`);
-        xhr.send();
-    }
-
-    function endStream() {
-        if (ipcamWS) {
-            ipcamWS.close();
-            ipcamWS = undefined;
-            ipcam.src = "";
-        }
-    }
-
-    document.querySelector(".js-camera-on").addEventListener("click", startStream);
-    document.querySelector(".js-camera-off").addEventListener("click", endStream);
-
-    function connectToScale(element) {
-        const worker = new SharedWorker("{% static 'js/worker.js' %}");
-        // console.log(element.dataset.name);
-        workers[element.dataset.name] = worker;
-        const indicator = element.querySelector(".js-result");
-        worker.port.addEventListener("message", function (e) {
-            if (e.data.open) {
-                indicator.textContent = e.data.data;
-            } else if (e.data.closed) {
-                indicator.textContent = "-";
-            } else {
-                console.log(e);
-            }
-        }, false);
-
-        // call start before posting
-        worker.port.start();
-
-        // post a message to the shared web worker
-        const pk = element.querySelector(".js-select-scale").value;
-        worker.port.postMessage({
-            connect: true,
-            scaleId: pk, 
-            hostname: window.location.hostname, 
-            port: window.location.port, 
-            protocol: window.location.protocol
-        });
-
-    }
-
-    function closeConnectionToSclae(element) {
-        const key = element.dataset.name;
-        if (workers[key]) {
-            workers[key].port.postMessage({ connect: false });
-        }
-    }
-
-    document.querySelectorAll(".weight-indicator").forEach(function (el) {
-        el.addEventListener("click", function (event) {
-            if (event.target.classList.contains("js-scale-on")) {
-                connectToScale(el);
-            } else if (event.target.classList.contains("js-scale-off")) {
-                closeConnectionToSclae(el);
-            }
-        })
-    })
-    // document.querySelector(".js-scale-on").addEventListener("click", connectToScale);
-    // document.querySelector(".js-scale-off").addEventListener("click", closeConnectionToSclae);
-</script>
+<script src="{% static 'js/wsplugin.js' %}"></script>
 {% endblock %}

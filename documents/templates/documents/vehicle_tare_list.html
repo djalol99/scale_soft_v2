@@ -77,7 +77,7 @@
                         <td>{% if obj.vehicle %} {{obj.vehicle}} {% else %} - {% endif %}</td>
                         <td>{% if obj.tare %} {{obj.tare}} {% else %} - {% endif %}</td>
                         <td>
-                            <a href="{% url 'documents:vehicle-tare-update' obj.id%}" class="btn btn-secondary btn-sm">Tahrirlash</a>
+                            <a href="{% url 'documents:vehicle-tare-detail' obj.id%}" class="btn btn-secondary btn-sm">Detail</a>
                             <a href="{% url 'documents:vehicle-tare-delete' obj.id%}" class="btn btn-danger btn-sm">O'chirish</a>
                         </td>
                     </tr>
