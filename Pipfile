@@ -19,6 +19,7 @@ requests = "*"
 xmltodict = "*"
 opencv-python = "*"
 pillow = "*"
+daphne = "*"
 
 [dev-packages]
 

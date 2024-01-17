@@ -33,7 +33,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
+    # 'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,7 +110,8 @@ REST_FRAMEWORK = {
 }
 
 REST_KNOX = {
-    'TOKEN_TTL': timedelta(hours=2), # The default is 10 hours i.e., timedelta(hours=10)).
+    # The default is 10 hours i.e., timedelta(hours=10)).
+    'TOKEN_TTL': timedelta(hours=2),
 }
 
 # Database

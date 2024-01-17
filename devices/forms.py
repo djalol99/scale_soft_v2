@@ -11,14 +11,14 @@ class ScaleForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'port': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Porti...'
-                }),
+            }),
             'protocol': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
         }
 
 
@@ -30,22 +30,22 @@ class IPCameraForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'ip_address': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'IPv4...'
-                }),
+            }),
             'username': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Login...'
-                }),
+            }),
             'password': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Parol...',
                 "type": "password"
-                }),
+            }),
             'anpr': TextInput(attrs={
-                'class': "form-check-input",
+                'class': "form-check-input js-checkbox",
                 "type": "checkbox"
-                }),
+            }),
         }

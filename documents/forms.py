@@ -17,7 +17,7 @@ class VehicleTareForm(forms.ModelForm):
         fields = ['vehicle', 'scale', 'tare']
         widgets = {
             'vehicle': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'form-select js-vehicle'
             }),
             'scale': forms.Select(attrs={
                 'class': 'form-select js-select-scale-weight',
@@ -82,7 +82,7 @@ class WeighingForm(forms.ModelForm):
                 'class': 'form-select js-summa-dependency js-select-vat-rate'
             }),
             'includes_vat': forms.TextInput(attrs={
-                'class': 'form-check-input js-summa-dependency js-includes-vat',
+                'class': 'form-check-input js-summa-dependency js-checkbox',
                 'type': 'checkbox'
             }),
             'summa': forms.TextInput(attrs={

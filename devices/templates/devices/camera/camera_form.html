@@ -50,8 +50,8 @@
                         {% endif %}
                     </div>
                     <div class="form-group my-2">
-                        {{ form.anpr }}
-                        <label for="{{form.anpr.id_for_label}}" class="form-check-label">ANPR</label> 
+                        <input type="checkbox" name="{{ form.anpr.name }}" id="{{ form.anpr.id_for_label }}" class="form-check-input js-checkbox" {% if form.anpr.value %} value="1" checked {% else %} value="0" {% endif %}>
+                        <label for="{{form.anpr.id_for_label}}" class="form-check-label">ANPR</label>  
                     </div>
                     <div class="form-group text-end mt-3">
                         <button type="submit" class="btn btn-primary me-2">Saqlash</button>

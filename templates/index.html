@@ -65,7 +65,7 @@
         </div>
         <!-- IP Camera 2 -->
         <div class="col-md-4">
-            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_2" data-pk="{{ipcamera_2}}">
+            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_2" data-id="2" data-pk="{{ipcamera_2}}">
                 <div class="camera__header row mb-2">
                     <div class="col-md-6">
                         <button type="button" class="js-camera-on btn btn-primary">ON</button>
@@ -86,7 +86,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="camera__body bg-secondary" style="min-width: 320px; min-height: 180px;">
+                <div class="camera__body bg-secondary">
                     <img src="" alt="IP Camera..." class="camera__img w-100 js-display">
                 </div>
             </div>
@@ -96,5 +96,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/wsplugin.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/wsplugin.js' %}"></script>
 {% endblock %}

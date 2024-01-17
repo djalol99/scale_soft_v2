@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-04 15:23+0500\n"
+"POT-Creation-Date: 2024-01-11 17:59+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: .\templates\navbar.html:13
+msgid "Catalogs"
+msgstr "Kataloglar"
+
+#: .\templates\navbar.html:29
+msgid "Documents"
+msgstr "Dokumentlar"
+
 #: .\templates\navbar.html:38
 msgid "Devices"
 msgstr "Qurilmalar"
+
+#: .\templates\navbar.html:65
+msgid "Log in"
+msgstr "Kirish"
+
+#: .\templates\navbar.html:67
+msgid "Log out"
+msgstr "Chiqish"
 
 #: .\templates\rest_framework\base.html:37
 msgid "navbar"

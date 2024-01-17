@@ -11,7 +11,7 @@ class BrandForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
         }
 
 
@@ -23,14 +23,14 @@ class VehicleForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'registration_plate': TextInput(attrs={
-                'class': "form-control",
+                'class': "form-control js-plate",
                 'placeholder': 'Raqami...'
-                }),
+            }),
             'brand': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
         }
 
 
@@ -42,27 +42,27 @@ class OrganizationForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'short_name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Qisqacha nomi...'
-                }),
+            }),
             'tin': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'INN'
-                }),
+            }),
             'address': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Manzili...'
-                }),
+            }),
             'phone': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Telefon raqami...'
-                }),
+            }),
             'email': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Elektron pochta...'
-                }),
+            }),
         }
 
 
@@ -74,7 +74,7 @@ class WarehouseForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
         }
 
 
@@ -86,19 +86,19 @@ class CounterpartyForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'tin': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'INN'
-                }),
+            }),
             'address': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Manzili...'
-                }),
+            }),
             'phone': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Telefon raqami...'
-                }),
+            }),
         }
 
 
@@ -109,19 +109,19 @@ class ContractForm(ModelForm):
         widgets = {
             'date': TextInput(attrs={
                 'class': "form-control",
-                'type': 'date', 
+                'type': 'date',
                 'placeholder': 'Sana...'
-                }),
+            }),
             'number': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Soni...'
-                }),
+            }),
             'organization': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
             'counterparty': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
             'comment': Textarea(attrs={
                 'class': 'form-control',
                 'rows': '3',
@@ -137,19 +137,19 @@ class DriverForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'F.I.SH...'
-                }),
+            }),
             'tin': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'INN'
-                }),
+            }),
             'address': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Manzili...'
-                }),
+            }),
             'phone': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Telefon raqami...'
-                }),
+            }),
         }
 
 
@@ -161,15 +161,15 @@ class UOMForm(ModelForm):
             'code': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Xalqaro kodi...'
-                }),
+            }),
             'short_name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Qisqacha nomi...'
-                }),
+            }),
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
         }
 
 
@@ -181,13 +181,11 @@ class ProductForm(ModelForm):
             'name': TextInput(attrs={
                 'class': "form-control",
                 'placeholder': 'Nomi...'
-                }),
+            }),
             'uom': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
             'vat_rate': Select(attrs={
                 'class': "form-select",
-                }),
+            }),
         }
-
-

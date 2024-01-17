@@ -1,5 +1,4 @@
 from devices import context_processors as cp
-from devices.models import Scale, IPCamera
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.consumer import AsyncConsumer
 from asgiref.sync import async_to_sync
@@ -11,7 +10,7 @@ import time
 from urllib.parse import urljoin
 import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
-from requests.exceptions import ConnectionError, HTTPError, ReadTimeout
+from requests.exceptions import ConnectionError, HTTPError, ReadTimeout, ChunkedEncodingError
 import xmltodict
 
 import os
@@ -20,6 +19,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scalesoft.settings')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 django.setup()
 
+from devices.models import Scale, IPCamera
 
 class TruckScaleConsumer(AsyncWebsocketConsumer):
 
@@ -266,13 +266,15 @@ class IPCameraWorkerConsumer(AsyncConsumer):
         self._start_main_thread()
 
     def _start_main_thread(self):
-        if self.hikapi and self.hikapi.stream and (self._thread is None or not self._thread.is_alive()):
+        if self.hikapi and self.hikapi.is_open and (self._thread is None or not self._thread.is_alive()):
+            self.hikapi.read = True
             thread_pictures = Thread(
                 target=self.hikapi.get_pictures, args=())
             thread_pictures.daemon = True
             thread_pictures.start()
 
             if self.anpr:
+                print(self.anpr)
                 thread_events = Thread(
                     target=self.hikapi.get_events, args=())
                 thread_events.daemon = True
@@ -286,15 +288,16 @@ class IPCameraWorkerConsumer(AsyncConsumer):
         print("stop task...")
         self._channels.discard(message["channel_name"])
         if len(self._channels) == 0 and self.hikapi:
-            self.hikapi.stream = False
+            self.hikapi.read = False
 
     async def resume(self, message):
+        print("resume camera...")
         self._channels.add(message["channel_name"])
         self._start_main_thread()
 
     async def close(self, message=None):
         if self.hikapi:
-            self.hikapi.stream = False
+            self.hikapi.is_open = False
         await self.channel_layer.group_send(self.receiver,
                                             {'type': 'send_message',
                                                      'ok': False,
@@ -307,7 +310,6 @@ class IPCameraWorkerConsumer(AsyncConsumer):
             try:
                 self.hikapi = HikvisionAPI(
                     host="http://" + self.ipcam, username=self.username, password=self.password)
-                self.hikapi.stream = True
                 self.hikapi.bg_task = self
                 break
             except ReadTimeout:
@@ -318,7 +320,7 @@ class IPCameraWorkerConsumer(AsyncConsumer):
                 break
 
     async def _send_data(self):
-        while self.hikapi.stream:
+        while self.hikapi.read and self.hikapi.is_open:
             if len(self.hikapi.pictures):
                 self._img_bytes = self.hikapi.pictures.pop(0)
                 await self.channel_layer.group_send(self.receiver,
@@ -333,7 +335,7 @@ class IPCameraWorkerConsumer(AsyncConsumer):
                                                     {'type': 'send_message',
                                                      'ok': True,
                                                      'data': data})
-        print("end stream camera")
+        print("end is_open camera")
 
 
 class HikvisionAPI:
@@ -352,7 +354,8 @@ class HikvisionAPI:
         self.username = username
         self.password = password
         self.session = self.get_session()
-        self.stream = False
+        self.is_open = True
+        self.read = False
         self.pictures = []
         self.events = []
 
@@ -382,11 +385,11 @@ class HikvisionAPI:
     def get_events(self, timeout=30):
         url = urljoin(self.host, "/ISAPI/Event/notification/alertStream")
         try:
-            while self.stream:
+            while self.read:
                 response = self.session.request(
                     "get", url, timeout=timeout, stream=True)
                 for chunk in response.iter_lines(chunk_size=1024, delimiter=b'--boundary'):
-                    if not self.stream:
+                    if not self.is_open:
                         break
                     if chunk:
                         chunks = chunk.split(b'\r\n\r\n')
@@ -399,15 +402,15 @@ class HikvisionAPI:
                                 break
                         except AttributeError:
                             pass
-        except (ConnectionError, ReadTimeout):
-            self.stream = False
+        except (ConnectionError, ReadTimeout, ChunkedEncodingError):
+            self.is_open = False
             async_to_sync(self.bg_task.close)()
 
     def get_pictures(self, width=640, height=360, timeout=3):
         url = urljoin(
             self.host, f"/ISAPI/Streaming/channels/101/picture?videoResolutionWidth={width}&videoResolutionHeight={height}")
         try:
-            while self.stream:
+            while self.read:
                 start_request = time.time()
                 response = self.session.request(
                     "get", url, timeout=timeout, stream=True)
@@ -418,8 +421,8 @@ class HikvisionAPI:
                     continue
                 self.pictures.append(response.content)
                 time.sleep(self.time_interval_pictures)
-        except (ConnectionError, ReadTimeout):
-            self.stream = False
+        except (ConnectionError, ReadTimeout, ChunkedEncodingError):
+            self.is_open = False
             async_to_sync(self.bg_task.close)()
 
     def get_spend_time_to_img(self):
