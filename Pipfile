@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-psycopg2 = "==2.8.*"
 djangorestframework = "*"
 django-rest-knox = "*"
 django-bootstrap-v5 = "*"
@@ -17,9 +16,9 @@ channels-redis = "*"
 pyserial = "*"
 requests = "*"
 xmltodict = "*"
-opencv-python = "*"
 pillow = "*"
 daphne = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

@@ -4,7 +4,7 @@ from enums.models import ScaleProtocol
 
 class Scale(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
-    port = models.CharField(max_length=2, blank=False, null=False)
+    port = models.CharField(blank=False, null=False)
     protocol = models.ForeignKey(
         ScaleProtocol, on_delete=models.PROTECT, related_name='protocols')
 

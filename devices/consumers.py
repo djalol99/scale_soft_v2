@@ -4,6 +4,7 @@ from channels.consumer import AsyncConsumer
 from asgiref.sync import async_to_sync
 from serial import SerialException, Serial
 from threading import Thread
+import platform
 import json
 import time
 
@@ -141,7 +142,7 @@ class TruckScaleWorkerConsumer(AsyncConsumer):
         try:
             if self.serial_conn and self.serial_conn.is_open:
                 self.serial_conn.close()
-            self.serial_conn = Serial('COM' + str(self.comport))
+            self.serial_conn = Serial(self.comport)
             await self.read_data_from_scale()
         except SerialException as ex:
             await self.close()
