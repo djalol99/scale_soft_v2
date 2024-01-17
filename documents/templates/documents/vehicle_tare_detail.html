@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Transport Tarasi{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-2 pb-4">
+    <div class="row">
+        <h5 class="text-center mb-2">Transport Tarasi</h5>
+        <div class="col-md-3 pe-0">
+            <!-- Photo 1 -->
+            <div class="camera border border-1 p-2 bg-light">
+                <div class="camera__body bg-secondary">
+                    <img src="{% if object.photo_1 %}{{ object.photo_1.url }}{% endif %}" alt="Photo 1..."
+                        class="camera__img w-100">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ps-0">
+            <!-- Photo 2 -->
+            <div class="camera border border-1 p-2 bg-light">
+                <div class="camera__body bg-secondary">
+                    <img src="{% if object.photo_2 %}{{ object.photo_2.url }}{% endif %}" alt="Photo 2..."
+                        class="camera__img w-100">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 border border-secondary p-4 rounded">
+            <div class="row">
+                <div class="form-group">
+                    <label for="vehicle" class="form-label">Transport</label>
+                    <input type="text" class="form-control" name="vehicle" id="vehicle" value="{{ object.vehicle }}"
+                        disabled>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="form-group">
+                    <label for="scale" class="form-label">Tarozi</label>
+                    <input type="text" class="form-control" name="scale" id="scale" value="{{ object.scale }}" disabled>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col">
+                    <label for="tare" class="form-label">Tara</label>
+                    <div class="input-group">
+                        <input type="number" id="tare" class="form-control" value="{{object.tare}}" disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text">kg</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <label for="date" class="form-label">Sana</label>
+                    <input type="datetime-local" id="date" class="form-control"
+                        value="{{ object.date|date:'Y-m-d H:i' }}" disabled>
+                </div>
+            </div>
+            <div class="form-group text-end mt-3">
+                <a href="{% url 'documents:vehicle-tares' %}" class="btn btn-outline-secondary">Orqaga</a>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

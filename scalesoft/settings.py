@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,12 +79,24 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'devices.context_processors.devices'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'scalesoft.wsgi.application'
+
+ASGI_APPLICATION = "scalesoft.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('localhost', 6379)]
+        }
+    }
+}
 
 # django-restframework settings
 REST_FRAMEWORK = {
@@ -96,7 +109,8 @@ REST_FRAMEWORK = {
 }
 
 REST_KNOX = {
-    'TOKEN_TTL': timedelta(hours=2), # The default is 10 hours i.e., timedelta(hours=10)).
+    # The default is 10 hours i.e., timedelta(hours=10)).
+    'TOKEN_TTL': timedelta(hours=2),
 }
 
 # Database
@@ -148,7 +162,7 @@ LANGUAGES = [
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 

@@ -1,115 +1,115 @@
-from django.forms import ModelForm, TextInput, Select, NumberInput, DateTimeInput, DateTimeField
+from django import forms
 
 from . import models
 
 
-class VehicleTareForm(ModelForm):
-    date = DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
-                         widget=DateTimeInput(
-                             attrs={
-                                'class': 'form-control js-input-date-weight',
-                                'type': 'datetime-local',
-                            }, format='%Y-%m-%d %H:%M'), required=False
-        )
+class VehicleTareForm(forms.ModelForm):
+    # date = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
+    #                      widget=forms.DateTimeInput(
+    #                          attrs={
+    #                             'class': 'form-control js-date-tare',
+    #                             'type': 'datetime-local',
+    #                         }, format='%Y-%m-%d %H:%M'), required=False
+    #     )
 
     class Meta:
         model = models.VehicleTare
-        fields = '__all__'
+        fields = ['vehicle', 'scale', 'tare']
         widgets = {
-            'vehicle': Select(attrs={
-                'class': 'form-select'
+            'vehicle': forms.Select(attrs={
+                'class': 'form-select js-vehicle'
             }),
-            'scale': Select(attrs={
+            'scale': forms.Select(attrs={
                 'class': 'form-select js-select-scale-weight',
             }),
-            'tare': NumberInput(attrs={
+            'tare': forms.NumberInput(attrs={
                 'class': 'form-control js-input-weight',
-            }), 
+            }),
         }
 
 
-class WeighingForm(ModelForm):
-    date_gross = DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
-                         widget=DateTimeInput(
-                             attrs={
-                                'class': 'form-control js-input-date-weight',
-                                'type': 'datetime-local',
-                            }, format='%Y-%m-%d %H:%M',), required=False
-        )
-    date_tare = DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
-                         widget=DateTimeInput(
-                             attrs={
-                                'class': 'form-control js-input-date-tare',
-                                'type': 'datetime-local',
-                            }, format='%Y-%m-%d %H:%M'), required=False
-        )
-    
+class WeighingForm(forms.ModelForm):
+    date_gross = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
+                                     widget=forms.DateTimeInput(
+        attrs={
+            'class': 'form-control js-input-date-weight',
+            'type': 'datetime-local',
+        }, format='%Y-%m-%d %H:%M',), required=False
+    )
+    date_tare = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M'],
+                                    widget=forms.DateTimeInput(
+        attrs={
+            'class': 'form-control js-input-date-tare',
+            'type': 'datetime-local',
+        }, format='%Y-%m-%d %H:%M'), required=False
+    )
+
     class Meta:
         model = models.Weighing
         fields = '__all__'
         widgets = {
-            'organization': Select(attrs={
+            'organization': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'warehouse': Select(attrs={
+            'warehouse': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'counterparty': Select(attrs={
+            'counterparty': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'contract': Select(attrs={
+            'contract': forms.Select(attrs={
                 'class': 'form-select',
             }),
-            'driver': Select(attrs={
+            'driver': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'vehicle': Select(attrs={
+            'vehicle': forms.Select(attrs={
                 'class': 'form-select js-vehicle'
             }),
-            'scale_gross': Select(attrs={
+            'scale_gross': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'product': Select(attrs={
+            'product': forms.Select(attrs={
                 'class': 'form-select js-product'
             }),
-            'price': TextInput(attrs={
+            'price': forms.TextInput(attrs={
                 'class': 'form-control js-summa-dependency js-input-price',
                 'type': 'number',
                 'step': 0.01,
                 "min": 0,
-            }), 
-            'vat_rate': Select(attrs={
+            }),
+            'vat_rate': forms.Select(attrs={
                 'class': 'form-select js-summa-dependency js-select-vat-rate'
             }),
-            'includes_vat': TextInput(attrs={
-                'class': 'form-check-input js-summa-dependency js-input-includes-vat',
+            'includes_vat': forms.TextInput(attrs={
+                'class': 'form-check-input js-summa-dependency js-checkbox',
                 'type': 'checkbox'
-            }), 
-            'summa': TextInput(attrs={
+            }),
+            'summa': forms.TextInput(attrs={
                 'class': 'form-control',
                 'type': 'number',
             }),
-            'vat_summa': TextInput(attrs={
+            'vat_summa': forms.TextInput(attrs={
                 'class': 'form-control',
                 'type': 'number',
             }),
-            'summa_with_vat': TextInput(attrs={
+            'summa_with_vat': forms.TextInput(attrs={
                 'class': 'form-control',
                 'type': 'number',
             }),
-            'gross': TextInput(attrs={
+            'gross': forms.TextInput(attrs={
                 'class': 'form-control fs-1 bg-primary text-white',
                 'type': 'number',
             }),
-            'tare': TextInput(attrs={
+            'tare': forms.TextInput(attrs={
                 'class': 'form-control',
                 'type': 'number',
             }),
-            'net': TextInput(attrs={
+            'net': forms.TextInput(attrs={
                 'class': 'form-control',
                 'type': 'number',
             }),
-            'scale_tare': TextInput(attrs={
+            'scale_tare': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
         }

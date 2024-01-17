@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yukni tarozidan o'tkazish{% endblock %}
+
+{% block content %}
+    <div class="container-fluid my-2 pb-4">
+        <div class="row">
+            <h5 class="text-center mb-2">Yukni tarozidan o'tkazish</h5>
+            <div class="col-md-3">
+                <!-- Photo 1 -->
+                <div class="camera border border-1 p-2 bg-light">
+                    <div class="camera__body bg-secondary">
+                        <img src="{% if object.photo_1 %}{{ object.photo_1.url }}{% endif %}" alt="Photo 1..." class="camera__img w-100">
+                    </div>
+                </div>
+                <!-- Photo 2 -->
+                <div class="camera border border-1 p-2 bg-light">
+                    <div class="camera__body bg-secondary">
+                        <img src="{% if object.photo_2 %}{{ object.photo_2.url }}{% endif %}" alt="Photo 2..." class="camera__img w-100">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 border border-secondary p-4 rounded">
+                    <div class="row my-2">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="organization" class="form-label">Tashkilot</label> 
+                                    <input type="text" class="form-control" value="{{object.organization}}" id="organization" disabled>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="warehouse" class="form-label">Sklad</label> 
+                                    <input type="text" class="form-control" value="{{object.warehouse}}" id="warehouse" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="vehicle" class="form-label">Transport</label> 
+                                    <input type="text" class="form-control" value="{{object.vehicle}}" id="vehicle" disabled>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="driver" class="form-label">Haydovchi</label> 
+                                    <input type="text" class="form-control" value="{{object.driver}}" id="driver" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="counterparty" class="form-label">Kontragent</label> 
+                                    <input type="text" class="form-control" value="{{object.counterparty}}" id="counterparty" disabled>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label for="contract" class="form-label">Shartnoma</label> 
+                                    <input type="text" class="form-control" value="{{object.contract}}" id="contract" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-md-4">
+                            <label for="product" class="form-label">Tovar</label> 
+                            <input type="text" class="form-control" value="{{object.product}}" id="product" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="price" class="form-label">Narxi</label> 
+                            <input type="text" class="form-control" value="{{object.price}}" id="price" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="vat_rate" class="form-label">QQS stavka</label> 
+                            <input type="text" class="form-control" value="{{object.vat_rate}}" id="vat_rate" disabled>
+                        </div>
+                        <div class="col-md-2 pt-5">
+                            <input type="checkbox" class="form-check-input" value="{{object.includes_vat}}" {% if object.includes_vat %}checked{% endif %} id="includes_vat" disabled>
+                            <label for="includes_vat" class="form-check-label">QQS ichida</label> 
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-md-3">
+                            <label for="summa" class="form-label">Summa</label> 
+                            <input type="number" class="form-control" value="{{object.summa}}" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="vat_summa" class="form-label">Summa QQS</label> 
+                            <input type="number" class="form-control" value="{{object.vat_summa}}" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="summa_with_vat" class="form-label">Jami summa</label> 
+                            <input type="number" class="form-control" value="{{object.summa_with_vat}}" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <table class="table table-bordered border-dark">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col" class="border-2 border-dark border-top-0">Massa</th>
+                                    <th scope="col" class="border-2 border-dark border-top-0">Vaqt</th>
+                                    <th scope="col" class="border-2 border-dark border-top-0 border-end-0">Tarozi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="border-2 border-dark border-start-0 table-primary">Brutto</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" value="{{object.gross}}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" class="form-control" value="{{object.date_gross|date:'Y-m-d H:i'}}" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" value="{{object.scale_gross}}" disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="border-2 border-dark border-start-0 table-primary">Tara</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" value="{{object.tare}}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" class="form-control" value="{{object.date_tare|date:'Y-m-d H:i'}}" disabled>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" value="{{object.scale_tare}}" disabled/>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom-0">
+                                    <th scope="row" class="border-2 border-dark border-start-0 border-bottom-0 table-primary">Netto</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" value="{{object.net}}" disabled>
+                                            <span class="mt-2 ms-2">kg</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group text-end mt-3">
+                        <a href="{% url 'documents:weighing' %}" class="btn btn-outline-secondary">Orqaga</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

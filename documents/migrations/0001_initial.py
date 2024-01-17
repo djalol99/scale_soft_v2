@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Weighing',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField(auto_now=True)),
                 ('price', models.FloatField()),
                 ('includes_vat', models.BooleanField(default=False)),
@@ -26,13 +27,20 @@ class Migration(migrations.Migration):
                 ('summa_with_vat', models.FloatField()),
                 ('doc_no', models.SmallIntegerField(blank=True, null=True)),
                 ('doc_date', models.DateField(blank=True, null=True)),
-                ('contract', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Contract')),
-                ('counterparty', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Counterparty')),
-                ('driver', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Driver')),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Organization')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Product')),
-                ('vat_rate', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='enums.VATRate')),
-                ('warehouse', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalogs.Warehouse')),
+                ('contract', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Contract')),
+                ('counterparty', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Counterparty')),
+                ('driver', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Driver')),
+                ('organization', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Organization')),
+                ('product', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Product')),
+                ('vat_rate', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='enums.VATRate')),
+                ('warehouse', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='catalogs.Warehouse')),
             ],
         ),
     ]

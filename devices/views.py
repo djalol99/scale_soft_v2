@@ -11,33 +11,6 @@ from rest_framework.response import Response
 from django_filters.views import FilterView
 
 from devices import filtersets, models, forms, serializers
-from devices import devices_api
-
-
-class ScaleConnectAPIView(APIView):
-    def get_object(self, pk):
-        try:
-            return models.Scale.objects.get(pk=pk)
-        except models.Scale.DoesNotExist:
-            raise Http404
-        
-    def get(self, request, pk):
-        obj = self.get_object(pk)
-        port = devices_api.start_ws_scale_app(comport=obj.port, protocol=obj.protocol)
-        return Response(port)    
-
-
-class IPCameraConnectAPIView(APIView):
-    def get_object(self, pk):
-        try:
-            return models.IPCamera.objects.get(pk=pk)
-        except models.IPCamera.DoesNotExist:
-            raise Http404
-        
-    def get(self, request, pk):
-        obj = self.get_object(pk)
-        port = devices_api.start_ws_ipcam_app(ip_address=obj.ip_address, username=obj.username, password=obj.password, anpr=int(obj.anpr))
-        return Response(port)
 
 
 class MyCustomDeleteView(LoginRequiredMixin, DeleteView):
@@ -62,19 +35,19 @@ class MyCustomDeleteView(LoginRequiredMixin, DeleteView):
                 self.error_url = self.success_url
             response = HttpResponseRedirect(self.error_url)
         return response
-    
+
 
 class MyCustomCreateView(LoginRequiredMixin, CreateView):
     success_message = "Muvaffaqiyatli yaratildi"
-    
+
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super().form_valid(form) 
+        return super().form_valid(form)
 
 
 class MyCustomUpdateView(LoginRequiredMixin, UpdateView):
     success_message = "Muvaffaqiyatli yangilandi"
-    
+
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
         return super().form_valid(form)
@@ -99,7 +72,7 @@ class ScaleUpdateView(MyCustomUpdateView):
     model = models.Scale
     form_class = forms.ScaleForm
     success_url = reverse_lazy('devices:scales')
-    
+
 
 class ScaleDeleteView(MyCustomDeleteView):
     model = models.Scale
@@ -130,7 +103,7 @@ class IPCameraUpdateView(MyCustomUpdateView):
     model = models.IPCamera
     form_class = forms.IPCameraForm
     success_url = reverse_lazy('devices:cameras')
-    
+
 
 class IPCameraDeleteView(MyCustomDeleteView):
     model = models.IPCamera

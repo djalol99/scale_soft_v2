@@ -1,86 +1,128 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Transport Tarasi{% endblock %}
 
 {% block content %}
-    <div class="container my-3 pb-4">
-        <div class="row">
-            <h3 class="text-center mb-3">Transport Tarasi</h3>
-            {% if form.errors %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ form.errors }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container-fluid my-2 pb-4">
+    <div class="row">
+        <h5 class="text-center mb-2">Transport Tarasi</h5>
+        {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ form.errors }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        <div class="col-md-4">
+            <!-- IP Camera 1 -->
+            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_1" data-id="1" >
+                <div class="camera__body bg-secondary">
+                    <img src="" alt="IP Camera..." class="camera__img w-100 js-display js-photo" data-name="photo_1" data-save="1">
                 </div>
-            {% endif %}
-            <div class="col-md-10 offset-md-1">
-                <form method="POST" class="border border-secondary p-4 rounded needs-validation" novalidate>
-                    {% csrf_token %}
-                    <div class="row my-2">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col">
-                                    <label for="{{form.vehicle.id_for_label}}" class="form-label">Transport</label> 
-                                    {{ form.vehicle }}
-                                    <div class="invalid-feedback">
-                                        Transportni tanlang.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row my-2">
-                                <div class="col">
-                                    <input type="hidden" name="{{form.scale.name}}" class="js-select-scale-weight" value="{% if form.scale.value %}{{form.scale.value}}{% endif %}">
-                                    <label for="{{form.scale.id_for_label}}" class="form-label">Tarozi</label> 
-                                    <select class="form-select js-select-scale-weight" disabled>
-                                        {% for id, name in form.fields.scale.choices %}
-                                            {% if form.scale.value == id %}
-                                                <option value="{{id}}" selected>{{name}}</option>
-                                            {% else %}
-                                                <option value="{{id}}">{{name}}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row my-2">
-                                <div class="col">
-                                    <input type="hidden" name="{{form.tare.name}}" class="js-input-weight" value="{{form.tare.value}}" />
-                                    <label for="{{form.tare.id_for_label}}" class="form-label">Tara</label> 
-                                    <input type="number" id="{{form.tare.id_for_label}}" class="form-control js-input-weight" value="{{form.tare.value}}" disabled>
-                                </div>
-                                <div class="col">
-                                    <input type="hidden" name="{{form.date.name}}" class="js-input-date-weight" value="{{form.date.value|date:'Y-m-d H:i'}}">
-                                    <label for="{{form.date.id_for_label}}" class="form-label">Sana</label> 
-                                    <input type="datetime-local" id="{{form.date.id_for_label}}" class="form-control js-input-date-weight" value="{{form.date.value|date:'Y-m-d H:i'}}" disabled>
+            </div>
+            <!-- IP Camera 2 -->
+            <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_2" data-id="2" >
+                <div class="camera__body bg-secondary">
+                    <img src="" alt="IP Camera..." class="camera__img w-100 js-display js-photo" data-name="photo_2" data-save="2">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <form method="POST" class="border border-secondary p-4 rounded needs-validation js-form-doc" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="photo_1" id="photo_1">
+                <input type="hidden" name="photo_2" id="photo_2">
+                <div class="row my-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{form.vehicle.id_for_label}}" class="form-label">Transport</label>
+                                {{ form.vehicle }}
+                                <div class="invalid-feedback">
+                                    Transportni tanlang.
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 offset-md-1 bg-secondary my-auto text-white rounded">
-                            <div class="form-group my-2">
-                                <select class="form-select js-select-scale-indicator">
+                        <div class="row my-2">
+                            <div class="col">
+                                <input type="hidden" name="{{form.scale.name}}" class="js-truckscale-pk"
+                                    value="{% if form.scale.value %}{{form.scale.value}}{% endif %}">
+                                <label for="{{form.scale.id_for_label}}" class="form-label">Tarozi</label>
+                                <select class="form-select js-truckscale-pk" disabled>
                                     {% for id, name in form.fields.scale.choices %}
-                                        <option value="{{id}}">{{name}}</option>
+                                        {% if truckscale_1 == id %}
+                                            <option value="{{id}}" selected>{{name}}</option>
+                                        {% else %}
+                                            <option value="{{id}}">{{name}}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="input-group">
-                                <input type="number" disabled class="form-control fs-1 js-input-indicator">
-                                <span class="fs-3 ms-1 pt-4">kg</span>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col">
+                                <input type="hidden" name="{{form.tare.name}}" class="js-tare"
+                                    value="{{form.tare.value}}" />
+                                <!-- <label for="{{form.tare.id_for_label}}" class="form-label">Tara</label>
+                                <input type="number" id="{{form.tare.id_for_label}}"
+                                    class="form-control js-tare" value="{{form.tare.value}}" disabled> -->
                             </div>
-                            <div class="my-2">
-                                <button type="button" class="btn btn-warning w-100 js-btn-weigh" disabled>O'lchash</button>
+                            <!-- <div class="col">
+                                <input type="hidden" name="{{form.date.name}}" class="js-date-tare"
+                                    value="{{form.date.value|date:'Y-m-d H:i'}}">
+                                <label for="{{form.date.id_for_label}}" class="form-label">Sana</label>
+                                <input type="datetime-local" id="{{form.date.id_for_label}}"
+                                    class="form-control js-date-tare"
+                                    value="{{form.date.value|date:'Y-m-d H:i'}}" disabled>
+                            </div> -->
+                        </div>
+                    </div>
+                    <!-- Weight-indicator -->
+                    <div class="col-md-5 offset-md-1">
+                        <div class="weight-indicator border border-1 p-2 bg-light js-truckscale" data-name="scale_1" data-id="1" data-pk="{{ truckscale_1 }}">
+                            <div class="weight-indicator__body border border-2 border-dark">
+                                <div class="weight-indicator__text d-flex align-items-center justify-content-center">
+                                    <span class="display-1 fw-normal js-display js-current-weight">-</span>
+                                    <span>kg</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group text-end mt-3">
-                        <button type="submit" class="btn btn-primary me-2">Saqlash</button>
-                        <a href="{% url 'documents:vehicle-tares' %}" class="btn btn-outline-secondary">Orqaga</a>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="form-group text-end mt-3">
+                    <button type="button" class="btn btn-primary me-2 js-submit">Saqlash</button>
+                    <a href="{% url 'documents:vehicle-tares' %}" class="btn btn-outline-secondary">Orqaga</a>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-    {% include 'documents/scripts.html' %}
+<script>
+    function submitForm(event) {
+        const weight_indicator = document.querySelector('.js-current-weight');
+        let tare = 0;
+        try {
+            tare = Number.parseInt(weight_indicator.textContent);
+        } catch (error) {
+        }
+        document.querySelectorAll('.js-tare').forEach(el=>el.value = tare);
+        
+        const date = new Date();
+        const formatter = new Intl.DateTimeFormat('uz', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        document.querySelectorAll('.js-date-tare').forEach(el=>el.value = formatter.format(date));
+        
+        // const truckscale_id = document.querySelector('.js-truckscale').dataset['pk'];
+        // document.querySelectorAll('.js-truckscale-pk').forEach(el=>el.value = truckscale_id);
+
+        document.querySelector(".js-form-doc").requestSubmit();
+    }
+
+    document.querySelector(".js-submit").addEventListener("click", function(event) {
+        submitForm(event);
+    })
+</script>
+<script src="{% static 'js/wsplugin.js' %}"></script>
 {% endblock %}

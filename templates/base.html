@@ -13,6 +13,7 @@
 	{% load bootstrap5 %}
 	{% bootstrap_css %}
 	{% bootstrap_javascript %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 </head>
 
 <body>
@@ -66,6 +67,13 @@
             this.requestSubmit();
         })
 		}
+
+		document.querySelectorAll(".js-checkbox").forEach(el => {
+			el.addEventListener("change", function(event) {
+				if (event.target.checked) event.target.value = 1;
+				else event.target.value = 0;
+			});
+		})
 	</script>
 	{% block scripts %} {% endblock %}
 </body>

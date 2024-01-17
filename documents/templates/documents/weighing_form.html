@@ -1,20 +1,37 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Yukni tarozidan o'tkazish{% endblock %}
 
 {% block content %}
-    <div class="container my-3 pb-4">
+    <div class="container-fluid my-2 pb-4">
         <div class="row">
-            <h3 class="text-center mb-3">Yukni tarozidan o'tkazish</h3>
+            <h5 class="text-center mb-2">Yukni tarozidan o'tkazish</h5>
             {% if form.errors %}
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ form.errors }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endif %}
-            <div class="col">
-                <form method="POST" class="border border-secondary p-4 rounded needs-validation" novalidate>
+            <div class="col-md-3">
+                <!-- IP Camera 1 -->
+                <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_1" data-id="1" >
+                    <div class="camera__body bg-secondary">
+                        <img src="" alt="IP Camera..." class="camera__img w-100 js-display js-photo" data-name="photo_1" data-save="1">
+                    </div>
+                </div>
+                <!-- IP Camera 2 -->
+                <div class="camera border border-1 p-2 bg-light js-ipcamera" data-name="camera_2" data-id="2" >
+                    <div class="camera__body bg-secondary">
+                        <img src="" alt="IP Camera..." class="camera__img w-100 js-display js-photo" data-name="photo_2" data-save="2">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <form method="POST" class="border border-secondary p-4 rounded needs-validation js-form-doc" novalidate>
                     {% csrf_token %}
+                    <input type="hidden" name="photo_1" id="photo_1">
+                    <input type="hidden" name="photo_2" id="photo_2">
                     <div class="row my-2">
                         <div class="col-md-4">
                             <div class="row">
@@ -59,21 +76,15 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Indicator screen -->
-                        <div class="col-md-4 bg-secondary my-auto text-white rounded">
-                            <div class="form-group my-2">
-                                <select class="form-select js-select-scale-indicator">
-                                    {% for id, name in form.fields.scale_gross.choices %}
-                                        <option value="{{id}}">{{name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <input type="number" disabled class="form-control fs-1 js-input-indicator">
-                                <span class="fs-3 ms-1 pt-4">kg</span>
-                            </div>
-                            <div class="my-2">
-                                <button type="button" class="btn btn-warning w-100 js-btn-weigh" disabled>O'lchash</button>
+                        <!-- Weight-indicator -->
+                        <div class="col-md-4">
+                            <div class="weight-indicator border border-1 p-2 bg-light js-truckscale" data-name="scale_1" data-id="1" data-pk="{{ truckscale_1 }}">
+                                <div class="weight-indicator__body border border-2 border-dark">
+                                    <div class="weight-indicator__text d-flex align-items-center justify-content-center">
+                                        <span class="display-1 fw-normal js-display js-current-weight">-</span>
+                                        <span>kg</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -137,10 +148,10 @@
                                         <input type="datetime-local" class="form-control js-input-date-weight" value="{{form.date_gross.value|date:'Y-m-d H:i'}}" disabled>
                                     </td>
                                     <td>
-                                        <input type="hidden" name="{{form.scale_gross.name}}" class="js-select-scale-weight" value="{% if form.scale_gross.value %}{{form.scale_gross.value}}{% endif %}"/>
+                                        <input type="hidden" name="{{form.scale_gross.name}}" class="js-select-scale-weight" value="{{truckscale_1}}"/>
                                         <select class="form-select js-select-scale-weight" disabled>
                                             {% for id, name in form.fields.scale_gross.choices %}
-                                                {% if form.scale_gross.value == id %}
+                                                {% if truckscale_1 == id %}
                                                     <option value="{{id}}" selected>{{name}}</option>
                                                 {% else %}
                                                     <option value="{{id}}">{{name}}</option>
@@ -189,7 +200,7 @@
                         </table>
                     </div>
                     <div class="form-group text-end mt-3">
-                        <button type="submit" class="btn btn-primary me-2">Saqlash</button>
+                        <button type="button" class="btn btn-primary me-2 js-submit">Saqlash</button>
                         <a href="{% url 'documents:weighing' %}" class="btn btn-outline-secondary">Orqaga</a>
                     </div>
                 </form>
@@ -199,39 +210,36 @@
 {% endblock %}
 
 {% block scripts %}
-    {% include 'documents/scripts.html' %}
     <script>
+        function calculate_net(element) {
+            const input_gross = document.querySelector('.js-input-weight') || document.querySelector('.js-input-gross');
+            const input_tare = document.querySelector('.js-input-tare')
+            const gross = input_gross ? input_gross.value : 0;
+            const tare = input_tare ? input_tare.value : 0;
+            element.value = gross - tare;
+        }
+
         function calculate_summa() {
-            let vat_rate = 0;
-            const id_vat_rate = document.querySelector('#{{form.vat_rate.id_for_label}}').value;
+            const vat_rate = document.querySelector('#{{form.vat_rate.id_for_label}}').value;
             if (id_vat_rate) {
-                const url = server + '/enums/vatrates/' + id_vat_rate;
-                fetch(url).then(res=>{
-                    if (res.ok) return res.json();
-                    else throw new Error(res.statusText);
-                }).then(data=>{
-                    vat_rate = data.rate; 
-                }).catch(err=>console.log(`Something went wrong. ${err}`))
-                .finally(()=>{
-                    if (document.querySelector('#{{form.includes_vat.id_for_label}}').checked) {
-                        document.querySelectorAll('.js-input-summa').forEach(el=>{
-                            el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*(100-vat_rate)/100).toFixed(2));
-                        });
-                        document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
-                            el.value = parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*vat_rate/100).toFixed(2));
-                        });
-                    } else {
-                        document.querySelectorAll('.js-input-summa').forEach(el=>{
-                            el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value).toFixed(2));
-                        });
-                        document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
-                            el.value = parseFloat((document.querySelector('.js-input-summa').value * vat_rate / 100).toFixed(2));
-                        });
-                    }
-                    document.querySelectorAll('.js-input-summa-with-vat').forEach(el=>{
-                            el.value =  parseFloat((parseFloat(document.querySelector('.js-input-summa').value) + parseFloat(document.querySelector('.js-input-vat-summa').value)).toFixed(2));
-                        });
-                })
+                if (document.querySelector('#{{form.includes_vat.id_for_label}}').checked) {
+                    document.querySelectorAll('.js-input-summa').forEach(el=>{
+                        el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*(100-vat_rate)/100).toFixed(2));
+                    });
+                    document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
+                        el.value = parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value*vat_rate/100).toFixed(2));
+                    });
+                } else {
+                    document.querySelectorAll('.js-input-summa').forEach(el=>{
+                        el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value).toFixed(2));
+                    });
+                    document.querySelectorAll('.js-input-vat-summa').forEach(el=>{
+                        el.value = parseFloat((document.querySelector('.js-input-summa').value * vat_rate / 100).toFixed(2));
+                    });
+                }
+                document.querySelectorAll('.js-input-summa-with-vat').forEach(el=>{
+                        el.value =  parseFloat((parseFloat(document.querySelector('.js-input-summa').value) + parseFloat(document.querySelector('.js-input-vat-summa').value)).toFixed(2));
+                    });
             } else {
                 document.querySelectorAll('.js-input-summa').forEach(el=>{
                     el.value =  parseFloat((document.querySelector('.js-input-price').value * document.querySelector('.js-input-net').value).toFixed(2));
@@ -246,21 +254,44 @@
             
         }
 
-        document.querySelectorAll('.js-summa-dependency ').forEach(el=>el.addEventListener('change', calculate_summa));
+        document.querySelector(".js-submit").addEventListener("click", function(event) {
+            const weight_indicator = document.querySelector('.js-current-weight');
+            let gross = 0;
+            try {
+                gross = Number.parseInt(weight_indicator.textContent);
+            } catch (error) {
+            }
+            document.querySelectorAll('.js-input-weight').forEach(el=>el.value = gross);
+        
+            const date = new Date();
+            const formatter = new Intl.DateTimeFormat('uz', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            document.querySelectorAll('.js-input-date-weight').forEach(el=>el.value = formatter.format(date));
 
-        // const server = location.origin;
+            document.querySelectorAll('.js-input-net').forEach(calculate_net);
+            
+            calculate_summa();
+            
+            document.querySelector(".js-form-doc").requestSubmit();
+        })
+
+        document.querySelectorAll('.js-summa-dependency').forEach(el=>el.addEventListener('change', calculate_summa));
+
+        document.querySelector(".js-input-price").addEventListener("input", calculate_summa);
+
         document.querySelector('.js-vehicle')
         .addEventListener('change', function(e) {
             if (this.value) {
-                const url = server + '/documents/last-vehicle-tare/' + this.value;
+                const url = location.origin + '/documents/last-vehicle-tare/' + this.value;
                 fetch(url).then(res=>{
                     if (res.ok) return res.json();
                     else throw new Error(res.statusText);
                 })
                 .then(data=>{
                     document.querySelectorAll('.js-input-tare').forEach(el=>el.value = Number.parseInt(data.tare));
-        
-                    document.querySelectorAll('.js-input-date-tare').forEach(el=>el.value = data.date.slice(0, -4));
+                    
+                    const date = new Date();
+                    const formatter = new Intl.DateTimeFormat('uz', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    document.querySelectorAll('.js-input-date-tare').forEach(el=>el.value = data.date.split(".")[0]);
 
                     document.querySelectorAll('.js-select-scale-tare').forEach(el=>el.value = data.scale);   
                 }).catch(err=>{
@@ -280,9 +311,10 @@
 
         document.querySelector('.js-product').addEventListener('change', function(e) {
             if (this.value) {
-                url = server + '/catalogs/products/' + this.value;
+                url = location.origin + '/catalogs/products/' + this.value;
                 fetch(url).then(res=>res.json())
                 .then(data=>{
+                    console.log(data);
                     document.querySelector('#{{form.vat_rate.id_for_label}}').value = data.vat_rate;
                     calculate_summa();
                 }).catch(err=>console.error(`Something went wrong. ${err}`));
@@ -290,7 +322,8 @@
                 document.querySelector('#{{form.vat_rate.id_for_label}}').value = "";
                 calculate_summa();
             } 
-            
         });
+
     </script>
+<script src="{% static 'js/wsplugin.js' %}"></script>
 {% endblock %}
