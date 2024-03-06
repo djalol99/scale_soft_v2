@@ -275,7 +275,6 @@ class IPCameraWorkerConsumer(AsyncConsumer):
             thread_pictures.start()
 
             if self.anpr:
-                print(self.anpr)
                 thread_events = Thread(
                     target=self.hikapi.get_events, args=())
                 thread_events.daemon = True
@@ -299,6 +298,7 @@ class IPCameraWorkerConsumer(AsyncConsumer):
     async def close(self, message=None):
         if self.hikapi:
             self.hikapi.is_open = False
+            self.hikapi.read = False
         await self.channel_layer.group_send(self.receiver,
                                             {'type': 'send_message',
                                                      'ok': False,
@@ -387,6 +387,7 @@ class HikvisionAPI:
         url = urljoin(self.host, "/ISAPI/Event/notification/alertStream")
         try:
             while self.read:
+                # print("reading events...")
                 response = self.session.request(
                     "get", url, timeout=timeout, stream=True)
                 for chunk in response.iter_lines(chunk_size=1024, delimiter=b'--boundary'):
@@ -403,7 +404,14 @@ class HikvisionAPI:
                                 break
                         except AttributeError:
                             pass
-        except (ConnectionError, ReadTimeout, ChunkedEncodingError):
+        except ConnectionAbortedError:
+            print("ConnectionAbortedError")
+        except ConnectionError:
+            print("ConnectionError")
+        except ReadTimeout:
+            print("ReadTimeout")                    
+        except (ConnectionError, ReadTimeout, ChunkedEncodingError) as error:
+            print(error)
             self.is_open = False
             async_to_sync(self.bg_task.close)()
 
@@ -412,6 +420,7 @@ class HikvisionAPI:
             self.host, f"/ISAPI/Streaming/channels/101/picture?videoResolutionWidth={width}&videoResolutionHeight={height}")
         try:
             while self.read:
+                # print("reading pictures...")
                 start_request = time.time()
                 response = self.session.request(
                     "get", url, timeout=timeout, stream=True)

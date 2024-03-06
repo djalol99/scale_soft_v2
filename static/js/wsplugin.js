@@ -45,10 +45,12 @@ function start_ipcamera_ws_connection(element) {
     } else {
       const data = JSON.parse(event.data);
       if (data["ok"]) {
-        const anpr = data["EventNotificationAlert"]["ANPR"];
+        const anpr = data["data"]["EventNotificationAlert"]["ANPR"];
         const licensePlate = anpr["licensePlate"];
 
         console.log(`Detected license plate '${licensePlate}'`);
+        const plateIndicator = document.querySelector(".js-license_plate");
+        if (plateIndicator) plateIndicator.textContent = licensePlate;
 
         const inpPlate = document.querySelector(".js-plate");
         if (inpPlate) {
@@ -78,14 +80,20 @@ function start_ipcamera_ws_connection(element) {
             })
             .catch((err) => console.error(`Something went wrong. ${err}`));
         }
-      } else {
+      } else if (!data["ok"]) {
         img.src = "";
+        const plateIndicator = document.querySelector(".js-license_plate");
+        if (plateIndicator) plateIndicator.textContent = "";
+        
         console.log(data["message"]);
       }
     }
   });
 
   ws.addEventListener("close", function (event) {
+    const plateIndicator = document.querySelector(".js-license_plate");
+    if (plateIndicator) plateIndicator.textContent = "";
+    
     if (ws_connections[name_ws]) {
       ws_connections[name_ws] = undefined;
     }
