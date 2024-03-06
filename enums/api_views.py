@@ -8,8 +8,3 @@ class ScaleProtocolViewSet(viewsets.ModelViewSet):
     serializer_class = ScaleProtocolSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
-class VATRateViewSet(viewsets.ModelViewSet):
-    queryset = VATRate.objects.all()
-    serializer_class = VATRateSerializer
-    permission_classes = [permissions.IsAuthenticated]

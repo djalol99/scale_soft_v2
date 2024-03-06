@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import ScaleProtocol, VATRate
+from .models import ScaleProtocol
 
 
 admin.site.register(ScaleProtocol)
-admin.site.register(VATRate)

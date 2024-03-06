@@ -35,15 +35,16 @@ function start_ipcamera_ws_connection(element) {
   ws_connections[name_ws] = ws;
 
   ws.addEventListener("message", function (event) {
-    if (typeof event.data == "object") {
-      img.src = URL.createObjectURL(event.data);
+    const data = JSON.parse(event.data);
+    if (data["ok"] && data["image_b64"]) {
+      // img.src = URL.createObjectURL(event.data);
+      img.src = data["image_b64"];
       if (inpPhoto) {
         const reader = new FileReader();
         reader.onload = (e) => readerOnLoad(inpPhoto, reader);
         reader.readAsDataURL(event.data);
       }
     } else {
-      const data = JSON.parse(event.data);
       if (data["ok"]) {
         const anpr = data["data"]["EventNotificationAlert"]["ANPR"];
         const licensePlate = anpr["licensePlate"];
@@ -80,7 +81,7 @@ function start_ipcamera_ws_connection(element) {
             })
             .catch((err) => console.error(`Something went wrong. ${err}`));
         }
-      } else if (!data["ok"]) {
+      } else {
         img.src = "";
         const plateIndicator = document.querySelector(".js-license_plate");
         if (plateIndicator) plateIndicator.textContent = "";

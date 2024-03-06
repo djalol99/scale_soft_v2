@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from enums.models import VATRate
-from catalogs.models import (
-    Organization, Warehouse, Contract, Driver, Counterparty, Product, Vehicle)
+from catalogs.models import Vehicle
 from devices.models import Scale
 
 

@@ -4,7 +4,7 @@ from channels.consumer import AsyncConsumer
 from asgiref.sync import async_to_sync
 from serial import SerialException, Serial
 from threading import Thread
-import platform
+import base64
 import json
 import time
 
@@ -236,8 +236,9 @@ class IPCameraConsumer(AsyncWebsocketConsumer):
 
     async def send_message(self, message):
         if message.get('ok'):
-            if message.get('bytes'):
-                await self.send(bytes_data=message['bytes'])
+            if message.get('image_b64'):
+                await self.send(text_data=json.dumps({"ok": True,
+                                                      "image_b64": message['image_b64']}))
             else:
                 await self.send(text_data=json.dumps({"ok": True,
                                                       "data": message['data']}))
@@ -323,11 +324,11 @@ class IPCameraWorkerConsumer(AsyncConsumer):
     async def _send_data(self):
         while self.hikapi.read and self.hikapi.is_open:
             if len(self.hikapi.pictures):
-                self._img_bytes = self.hikapi.pictures.pop(0)
+                image_b64 = self.hikapi.pictures.pop(0)
                 await self.channel_layer.group_send(self.receiver,
                                                     {'type': 'send_message',
                                                      'ok': True,
-                                                     'bytes': self._img_bytes})
+                                                     'image_b64': image_b64})
             else:
                 time.sleep(0.2)
             if self.anpr and len(self.hikapi.events):
@@ -429,7 +430,8 @@ class HikvisionAPI:
                 if len(self.pictures) >= self.image_queue_size:
                     time.sleep(self.time_interval_pictures)
                     continue
-                self.pictures.append(response.content)
+                img_b64 = "data:image/png;base64, " + base64.b64encode(response.content).decode()
+                self.pictures.append(img_b64)
                 time.sleep(self.time_interval_pictures)
         except (ConnectionError, ReadTimeout, ChunkedEncodingError):
             self.is_open = False

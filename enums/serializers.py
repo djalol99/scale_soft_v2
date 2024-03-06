@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ScaleProtocol, VATRate
+from .models import ScaleProtocol
 
 
 class ScaleProtocolSerializer(serializers.ModelSerializer):
@@ -7,8 +7,3 @@ class ScaleProtocolSerializer(serializers.ModelSerializer):
         model = ScaleProtocol
         fields = ['id', 'name']
 
-
-class VATRateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VATRate
-        fields = ['id', 'rate']

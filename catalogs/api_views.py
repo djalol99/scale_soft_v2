@@ -12,9 +12,7 @@ import json
 from exchange.models import Exchange
 from .models import (VehicleBrand, Vehicle, Organization, Warehouse,
                      Counterparty, Contract, Driver, UOM, Product)
-from .serializers import (VehicleBrandSerializer, VehicleSerializer, OrganizationSerializer,
-                          WarehouseSerializer, CounterpartySerializer, ContractSerializer, DriverSerializer,
-                          UOMSerializer, ProductSerializer)
+from .serializers import (VehicleBrandSerializer, VehicleSerializer)
 
 
 class MyModelViewSet(viewsets.ModelViewSet):
@@ -111,37 +109,3 @@ class VehicleDetailAPIView(RetrieveAPIView):
     serializer_class = VehicleSerializer
     queryset = Vehicle.objects.all()
 
-
-class OrganizationViewSet(MyModelViewSet):
-    queryset = Organization.objects.all()
-    serializer_class = OrganizationSerializer
-
-
-class WarehouseViewSet(MyModelViewSet):
-    queryset = Warehouse.objects.all()
-    serializer_class = WarehouseSerializer
-
-
-class CounterpartyViewSet(MyModelViewSet):
-    queryset = Counterparty.objects.all()
-    serializer_class = CounterpartySerializer
-
-
-class ContractViewSet(MyModelViewSet):
-    queryset = Contract.objects.all()
-    serializer_class = ContractSerializer
-
-
-class DriverViewSet(MyModelViewSet):
-    queryset = Driver.objects.all()
-    serializer_class = DriverSerializer
-
-
-class UOMViewSet(MyModelViewSet):
-    queryset = UOM.objects.all()
-    serializer_class = UOMSerializer
-
-
-class ProductViewSet(MyModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
