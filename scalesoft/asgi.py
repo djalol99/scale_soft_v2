@@ -21,10 +21,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scalesoft.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": AllowedHostsOriginValidator(
-        AuthMiddlewareStack(
+    # "websocket": AllowedHostsOriginValidator(
+    #     AuthMiddlewareStack(
+    #         URLRouter(websocket_urlpatterns)
+    #     )),
+    "websocket": AuthMiddlewareStack(
             URLRouter(websocket_urlpatterns)
-        )),
+        ),
     'channel': ChannelNameRouter({
         'truckscale_1': TruckScaleWorkerConsumer.as_asgi(),
         'ipcamera_1': IPCameraWorkerConsumer.as_asgi(),
